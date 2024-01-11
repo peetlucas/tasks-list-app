@@ -25,10 +25,33 @@ export const TodoWrapperLocalStorage = () => {
         setTodos(newTodo);
         localStorage.setItem('todos', JSON.stringify(newTodo));
     };
-    
+
+    const deleteTodo = (id) => {
+        const newTodo = todos.filter((todo) => todo.id !== id);
+        setTodos(newTodo);
+        localStorage.removeItem('todos', JSON.stringify(newTodo));
+    };
+
+    const editTodo = id => {
+        setTodos(todos.map(todo => todo.id === id ? {...todo, isEditing: !todo.isEditing} : todo));
+    }
+
+    const editTask = (task, id) => {
+        const newTodos = task.map(todo => todo.id === id ? {...todo, task, isEditing: !todo.isEditing} : todo);
+        setTodos(newTodos);
+        localStorage.setItem('todos', JSON.stringify(newTodos));
+    }
   return (
     <div>
-      
+      <h1>Tasks List App LocalStorage</h1>
+      <TodoForm addTodo={addTodo} />
+      {todos.map((todo, index) => (
+        todo.isEditing ? (
+            <EditTodoForm editTodo={editTask} />
+        ) : (
+            <Todo task={todo} key={index} toggleComplete={toggleComplete} deleteTodo={deleteTodo} editTodo={editTodo} />
+      )
+      ))}
     </div>
   )
 }
